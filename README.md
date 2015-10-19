@@ -1,41 +1,19 @@
-stream.py
+receiveStream.py
 =========
+Forked and modified from https://github.com/balrog-kun/fpv-stream-to-vr
 
-A simple python script to open a live video stream and send it to an
-Oculus Rift DK2.  The parameters used to select the output port are at
-the top of the script and can be modified for other VR goggles.
+A simple python script to open and display dual video feeds to an
+Oculus Rift DK2.
 
-It currently uses a single 2D video source, duplicates
-it and displays without any deformation.  This works great for wide-angle
+Input can be either single or dual camera. In single camera mode, the camera will be duplicated and displayed for each eye.  This works great for wide-angle
 / fish-eye lens cameras used for FPV but won't look good for a narrow-angle
 camera -- the image will look deformed.
 
-    $ ./stream.py [ options ... ] [ device-path ]
+    $ ./receiveStream.py [ options ... ]
 
-_device-path_ may be a /dev path to a v4l2 video source such as an
-analog receiver connected to a USB port through a TV-grabber (EasyCap and
-similar), usually /dev/video*N*.  Default is `/dev/video1` since
-`/dev/video0` is often a laptop's selfie camera.
+-s --single enables single camera mode
 
-_device-path_ may also be `wifibroadcast` for the script to try reading
-video from standard input as described on the [wifibroadcast project page]
-(https://befinitiv.wordpress.com/wifibroadcast-analog-like-transmission-of-live-video-data/).
-In that case you'll use something like
-`sudo ./rx -b 8 -r 4 -f 1024 wlan0 | ./stream.py wifibroadcast`
-
-Other options
-=============
-
-`-viewport` creates additional video output windows for people who want to
-watch the feed on the laptop screen while the pilot uses the goggles.  Or
-for the pilot to watch while another person uses the goggles.
-
-`-defscale` _`<scale>`_
-
-_scale_ can be an integer percentage to set the initial video scale for
-the goggles.  Default is 100.  100 means use the full goggles resolution
-(about 110 degrees FOV on an oculus DK2).  20 or 30 percent will give a FOV
-similar to Fatshark, Headplay and other goggles.
+-sw --swap swaps the camera feeds - in dual mode this will swap the position of each feed, in single camera mode it will select which feed is used.
 
 Keys
 ====
@@ -47,7 +25,11 @@ When the script runs the following keys can be used:
 * Left / right arrows: Move video slightly left/right, useful if analog
   signal has a black band on one side.
 
-* Up / down arrows: decrease/increase video frame size by 5%.
+* Up / down arrows: Adjust vertical offset between left/right eyes. Can be used to compensate for slight camera vertical alignment issues.
+
+
+* 1 / 2:  Increase / Decrease video scale. 
+
 
 * '[' / ']': slightly increase/decrease left-to-right-eye video frame
   distance, basically move the virtual screen closer / farther.
@@ -55,16 +37,7 @@ When the script runs the following keys can be used:
 Ideas
 =====
 
-* Use the head tracker for video parameter adjustment (e.g. when holding
-  space on the keyboard) or gimbal / aircraft steering (with some other
-  key) though MAVlink messages.
-
-* Add a ground-side OSD for wifibroadcast.  This would perhaps need to
-  be a gstreamer plugin written in C for performance unless it was all
-  OpenGL calls in which case it might not matter.  Could use transparency,
-  colours, etc. to achieve something like the greenish fighter-jet glass
-  cockpit style overlay.  Could also make use of basic 3D but that could
-  be too distracting.
+* Basic text rendering is working, but so far only static. Dynamic text would be interesting.
 
 Dependencies
 ============
